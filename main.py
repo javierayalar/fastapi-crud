@@ -1,29 +1,37 @@
 from fastapi import FastAPI, Request
 import json
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
+import pandas as pd
 
 app = FastAPI(title="App Demo")
-datos = {"1":"Python", "2":"Java", "3":"PHP", "4":"JavaScript", "5":"C++"}
+templates = Jinja2Templates(directory="templates")
+df = pd.read_csv("programming_languages.csv")
+datos = df["language"].to_dict()
 
 @app.get("/")
-async def raiz():
+async def raiz(request: Request):
     sin_codificar = json.dumps(datos)
-    return json.loads(sin_codificar)
+    json_datos = json.loads(sin_codificar)
+    return templates.TemplateResponse("index.html",
+                                      {"request":request, "listado":json_datos})
 
 @app.post("/agregar")
 async def agregar(request:Request):
     nuevos_datos={}
     formdata = await request.form()
-    i = 1
+    i = 0
     for id in datos:
-        nuevos_datos[str(id)] = datos[id]
+        nuevos_datos[id] = datos[id]
         i+=1
-    nuevos_datos[str(i)] = formdata["nuevolenguaje"]
-    sin_codificar = json.dumps(nuevos_datos)
-    return json.loads(sin_codificar)
+    datos[str(i)] = formdata["newlanguage"]
+    sin_codificar = json.dumps(datos)
+    json.loads(sin_codificar)
+    return RedirectResponse("/", 303)
 
-#para ejecutar
-#uvicorn main:app --reload
-
-#http://localhost:8000
-#http://localhost:8000/docs
+@app.get("/eliminar/{id}")
+async def eliminar(request: Request, id:int):
+    #print(datos[id])
+    del datos[id]
+    return RedirectResponse("/", 303)
 
