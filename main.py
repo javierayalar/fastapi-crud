@@ -22,7 +22,7 @@ async def raiz(request: Request):
 async def agregar(request:Request):
     nuevos_datos={}
     formdata = await request.form()
-    i = 0
+    i = 1
     for id in datos:
         nuevos_datos[id] = datos[id]
         i+=1
@@ -33,7 +33,7 @@ async def agregar(request:Request):
 
 @app.get("/eliminar/{id}")
 async def eliminar(request: Request, id:int):
-    #print(datos[id])
+    print(datos)
     del datos[id]
     return RedirectResponse("/", 303)
 
