@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from fastapi import Request
 import json
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
@@ -14,7 +15,8 @@ async def raiz(request: Request):
     sin_codificar = json.dumps(datos)
     json_datos = json.loads(sin_codificar)
     return templates.TemplateResponse("index.html",
-                                      {"request":request, "listado":json_datos})
+                                      {"request":request,
+                                       "listado":json_datos})
 
 @app.post("/agregar")
 async def agregar(request:Request):
