@@ -27,13 +27,14 @@ async def agregar(request:Request):
         nuevos_datos[id] = datos[id]
         i+=1
     datos[str(i)] = formdata["newlanguage"]
+    print("add:", formdata["newlanguage"])
     sin_codificar = json.dumps(datos)
     json.loads(sin_codificar)
     return RedirectResponse("/", 303)
 
 @app.get("/eliminar/{id}")
 async def eliminar(request: Request, id:int):
-    print(datos)
+    print("delete:", datos[id])
     del datos[id]
     return RedirectResponse("/", 303)
 
